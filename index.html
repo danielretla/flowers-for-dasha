@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#f7f0e8" />
+  <meta name="description" content="Маленький интерактивный сюрприз для Даши." />
+  <title>Даше — маленький сюрприз ✿</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='86'%3E%F0%9F%8C%B8%3C/text%3E%3C/svg%3E" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&display=swap');
+    :root { --cream:#f7f0e8; --ink:#28392e; --muted:#798278; --pink:#df8691; --accent:#9a5a63; --dark:#243b30; --line:#e9ddd2; --card:#fffdf7; }
+    *,*::before,*::after { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; min-height:100svh; font-family:'DM Sans', system-ui, sans-serif; color:var(--ink); background:var(--cream); overflow-x:hidden; }
+    body::before { content:''; position:fixed; inset:0; pointer-events:none; background: radial-gradient(circle at 15% 12%,#f6d9d3a6 0,transparent 35%), radial-gradient(circle at 85% 80%,#e5e7ceaa 0,transparent 34%); z-index:-1; }
+    button { font:inherit; cursor:pointer; -webkit-tap-highlight-color:transparent; }
+    button:focus-visible { outline:3px solid #b56b76; outline-offset:4px; }
+    button:disabled { cursor:default; }
+    [hidden] { display:none !important; }
+    .page { width:min(100%, 560px); margin:0 auto; padding:23px 20px 30px; min-height:100svh; display:flex; flex-direction:column; }
+    .topbar { display:flex; align-items:center; justify-content:space-between; height:48px; gap:12px; }
+    .logo { font: 600 15px 'Playfair Display',Georgia,serif; letter-spacing:.005em; }
+    .logo-mark { display:inline-flex; width:31px; height:31px; border-radius:100%; justify-content:center; align-items:center; background:#e9c7c4; color:#995c64; margin-right:6px; font:20px Georgia,serif; }
+    .sound { display:inline-flex; align-items:center; gap:7px; padding:9px 12px; color:#6c766c; background:#ffffffa6; border:1px solid #eaded4; border-radius:999px; font-size:11px; font-weight:700; letter-spacing:.05em; }
+    .main { flex:1; display:flex; align-items:center; justify-content:center; }
+    .scene { width:100%; animation:comeIn .6s ease both; }
+    .eyebrow { color:var(--accent); font-size:11px; font-weight:700; letter-spacing:.2em; text-transform:uppercase; text-align:center; }
+    h1,h2,h3,p { margin-top:0; }
+    h1,h2,h3 { font-family:'Playfair Display', Georgia, serif; font-weight:500; }
+    h1 { font-size:clamp(49px,11.9vw,78px); line-height:1.04; letter-spacing:-.044em; text-align:center; margin:19px 0 17px; }
+    h1 em, h2 em { font-weight:500; color:#ad6873; }
+    h2 { font-size:clamp(34px,8.5vw,47px); line-height:1.13; letter-spacing:-.036em; text-align:center; margin:13px 0; }
+    .desc { max-width:385px; margin:0 auto 24px; font-size:14px; color:#6d786f; line-height:1.75; text-align:center; }
+    .intro-art { height:230px; width:100%; margin:8px auto 10px; position:relative; display:flex; align-items:center; justify-content:center; }
+    .intro-art::before { content:''; background:#f8e5df; border-radius:52% 48% 50% 50%; width:240px; height:204px; position:absolute; transform:rotate(-12deg); box-shadow:0 23px 80px #d1a6a533; }
+    .intro-art::after { content:'✧'; position:absolute; right:18%; top:18%; color:#a9626d; font-size:28px; }
+    .intro-sprig { position:relative; width:160px; height:192px; transform:rotate(13deg); animation:sway 6s ease-in-out infinite; filter:drop-shadow(4px 12px 10px #7e614722); }
+    .intro-sprig path { stroke-linecap:round; }
+    .terminal { background:#293a33; border-radius:13px; box-shadow:0 18px 50px #263b3026; padding:15px 17px; color:#ebede5; width:min(100%,405px); margin:0 auto 22px; font:12px/1.9 ui-monospace,SFMono-Regular,Consolas,monospace; }
+    .term-head { display:flex; gap:5px; align-items:center; margin-bottom:10px; border-bottom:1px solid #ffffff18; padding-bottom:9px; }
+    .dot { width:7px;height:7px;border-radius:100%; background:#eeaeae; }
+    .dot:nth-child(2) { background:#e3cf98; }.dot:nth-child(3){ background:#b1c9aa; }
+    .term-file { margin-left:auto; color:#aab6ac; font-size:10px; }
+    .c-pink{ color:#eab1b6; }.c-yellow{color:#f1d3a2}.c-green{color:#b4e3ba}
+    .primary { width:min(100%,395px); min-height:56px; display:flex; align-items:center; justify-content:center; gap:10px; margin:0 auto; border:0; background:var(--dark); color:white; border-radius:15px; font-size:14px; font-weight:700; box-shadow:0 12px 24px #284d332d; transition:transform .2s, box-shadow .2s; }
+    .primary:hover:not(:disabled) { transform:translateY(-2px);box-shadow:0 16px 28px #284d333b; }
+    .primary:active:not(:disabled) { transform:scale(.98); }
+    .primary:disabled { background:#aeb9ad; box-shadow:none; }
+    .secondary { border:1px solid #d5c9be; border-radius:14px; min-height:48px; color:#526355; background:#fff9f2; padding:0 20px; font-weight:700; font-size:13px; }
+    .arrow { font-size:19px; font-weight:400; }
+    .tiny { font-size:11px; text-align:center; letter-spacing:.015em; color:#96a095; margin:13px 0 0; }
+    .scene-top { padding-top:10px; }
+    .step { text-align:center; font-size:10px; font-weight:700; color:#b17e80; letter-spacing:.2em; text-transform:uppercase; }
+    .canvas-card { width:100%; max-width:418px; aspect-ratio: 390/405; margin:8px auto 13px; position:relative; border:1px solid #e7ddd1; border-radius:28px; background: radial-gradient(circle at 50% 32%,#fffdf9 4%,#faf3e9 62%,#f0e4d8 100%); overflow:hidden; box-shadow:inset 0 8px 24px #ffffffc7,0 14px 30px #775f4420; touch-action:manipulation; }
+    .canvas-card::before {content:'';position:absolute;left:8%;right:8%;bottom:5%;height:38px;border-radius:50%;background:#cfb9a45e;filter:blur(15px);}
+    .garden-tag { position:absolute; top:16px; left:19px; font-family:'Playfair Display',serif; font-style:italic; font-size:12px; color:#b58b87; }
+    .garden-bottom { position:absolute; bottom:15px; left:0; width:100%; text-align:center; font-family:Georgia,serif; font-size:12px; font-style:italic; color:#9e8578; }
+    .garden-svg { width:100%; height:100%; position:relative; display:block; overflow:visible; }
+    .flower-group .stem { fill:none; stroke:#6b926b; stroke-width:4; stroke-linecap:round; stroke-dasharray:350; stroke-dashoffset:350; animation:stemDraw 1.2s ease forwards; }
+    .flower-group .leaf { fill:#86aa7b; opacity:0; animation:leafIn .45s ease .45s forwards; }
+    .flower-head { transform-box:fill-box; transform-origin:center; animation:bloom .8s cubic-bezier(.25,1.5,.32,1) .65s both; cursor:pointer; }
+    .flower-head:focus-visible { outline:2px solid #a45969; }
+    #paper-wrap, #ribbon { opacity:0; transition:opacity 1s ease; }
+    .is-wrapped #paper-wrap, .is-wrapped #ribbon { opacity:1; }
+    #ribbon { transform-origin:50% 80%; }
+    .is-wrapped #ribbon { animation:ribbonPop .6s ease both; }
+    .palette-row { display:flex; align-items:center; justify-content:center; gap:8px; margin:11px auto 12px; }
+    .palette { width:37px; height:37px; background:#fff9f5; display:inline-flex; align-items:center; justify-content:center; border:1px solid #eadbd0; border-radius:100%; transition:transform .2s, border .2s; }
+    .palette > span { width:20px;height:20px; border-radius:50%; display:block; }
+    .palette.active { border:2px solid #97646b; transform:scale(1.09); }
+    .palette-label { text-align:center; font-size:11px; font-weight:700; color:#7b8178; min-height:18px; }
+    .progress { display:flex; justify-content:center; gap:6px; margin:13px 0 15px; }
+    .progress > span { width:23px; height:4px; background:#e1d9cc; border-radius:99px; transition:background .3s; }
+    .progress > span.on { background:#b1747d; }
+    .flow-caption { font-size:12px; color:#8c9588; line-height:1.55; text-align:center; margin:8px 0 15px; min-height:20px; }
+    .letter-wrap { position:relative; width:min(100%,430px); margin:15px auto 20px; }
+    .envelope { width:100%; height:244px; position:relative; border:0; background:none; cursor:pointer; padding:0; perspective:800px; }
+    .env-body { position:absolute; inset:37px 15px 5px; background:#e9aea8; border:1px solid #d79996; border-radius:4px 4px 12px 12px; box-shadow:0 18px 32px #a46c6228; }
+    .env-bottom { position:absolute; inset:37px 15px 5px; background:#eeb7b1; clip-path:polygon(0 0,50% 60%,100% 0,100% 100%,0 100%); }
+    .env-left { position:absolute; inset:37px 15px 5px; background:#f0c1bb; clip-path:polygon(0 0,52% 60%,0 100%); }
+    .env-right { position:absolute; inset:37px 15px 5px; background:#efb9b5; clip-path:polygon(100% 0,48% 60%,100% 100%); }
+    .env-flap { position:absolute; top:37px;left:15px;right:15px;height:112px; background:#edb7b0; clip-path:polygon(0 0,100% 0,50% 100%); transform-origin:top center; transition:transform .65s; filter:drop-shadow(0 3px 1px #b2747626); z-index:5; }
+    .seal { position:absolute;z-index:6;top:115px;left:calc(50% - 24px);width:48px;height:48px;border-radius:50%;background:#b8747a;border:2px solid #d39399;color:#fff; display:flex;align-items:center;justify-content:center;font:27px 'Playfair Display',serif; box-shadow:0 4px 8px #98626b33; transition:opacity .3s; }
+    .envelope.opened .env-flap { transform:rotateX(168deg); z-index:0; }
+    .envelope.opened .seal { opacity:0; }
+    .letter { margin-top:10px; padding:28px 27px 23px; border-radius:9px; position:relative; background:linear-gradient(#fffefa,#fffcf6); border:1px solid #e4dacb; box-shadow:0 20px 50px #886f5528; animation:letterAppear .8s ease both; }
+    .letter::before {content:'✿';position:absolute;right:21px;top:15px;color:#e4b0b0;font-size:29px;}
+    .letter h3 {font-size:33px;letter-spacing:-.025em;margin:5px 0 17px;color:#925c67;}
+    .letter p {font-size:14px;line-height:1.9;color:#5c6d61;margin:0 0 13px;}
+    .letter .sign { margin:19px 0 0; font-family:'Playfair Display',Georgia,serif; font-size:18px; font-style:italic; color:#955e64; }
+    .actions { display:flex; gap:10px; flex-direction:column; max-width:395px; margin:15px auto 0; }
+    .actions .primary { width:100%; }
+    .restart { margin:0 auto; border:0; background:none; color:#8c9187; padding:9px 14px; font-size:12px; text-decoration:underline; text-underline-offset:4px; }
+    .magic-reveal {margin:18px auto 12px; text-align:center; animation:comeIn .7s both;}
+    .magic-reveal h3 {font-size:clamp(30px,7vw,39px); line-height:1.3; margin:9px auto;}
+    .magic-reveal p { font-size:13px;line-height:1.65;color:#8c7b78;max-width:340px;margin:0 auto;}
+    .footer { text-align:center; color:#a1a89d; font-size:10px; padding:24px 0 2px; letter-spacing:.09em; }
+    #particles { position:fixed; inset:0; width:100%; height:100%; pointer-events:none;z-index:100; }
+    @keyframes comeIn { from {opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)} }
+    @keyframes sway { 0%,100% {transform:rotate(9deg) translateY(0)} 50% {transform:rotate(14deg) translateY(-5px)} }
+    @keyframes stemDraw {to{stroke-dashoffset:0}}@keyframes leafIn{to{opacity:1}} 
+    @keyframes bloom {0%{transform:scale(.05) rotate(-15deg);opacity:0}80%{transform:scale(1.13) rotate(4deg);opacity:1}100%{transform:scale(1) rotate(0);opacity:1}}
+    @keyframes ribbonPop {from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+    @keyframes letterAppear {from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:translateY(0)}}
+    @media(min-height:820px){.page{padding-top:30px}.intro-art{height:250px}.scene-top{padding-top:18px}}
+    @media(max-width:375px){.page{padding:16px 15px 22px}h1{font-size:48px}.intro-art{height:194px}.intro-sprig{height:165px}.desc{font-size:13px;margin-bottom:16px}.terminal{font-size:11px;padding:12px}.canvas-card{max-width:365px}h2{font-size:34px}}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}.flower-group .stem{stroke-dashoffset:0}}
+  </style>
+</head>
+<body>
+<canvas id="particles" aria-hidden="true"></canvas>
+<div class="page">
+  <header class="topbar">
+    <div class="logo"><span class="logo-mark">✿</span> made with a little magic</div>
+    <button class="sound" id="soundBtn" type="button" aria-pressed="false" aria-label="Включить звук"><span id="soundIcon">♪</span> <span id="soundLabel">ЗВУК ВЫКЛ.</span></button>
+  </header>
+  <main class="main">
+    <section class="scene" id="intro" aria-label="Начало сюрприза">
+      <p class="eyebrow">a tiny piece of magic · for you</p>
+      <h1><span id="introName">Даша</span>,<br><em>для тебя.</em></h1>
+      <p class="desc">Обычно цветы просто дарят.<br>Но я решил немного усложнить задачу —<br>и написать для тебя целый маленький мир.</p>
+      <div class="intro-art" aria-hidden="true">
+        <svg class="intro-sprig" viewBox="0 0 180 208" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M90 190C85 139 78 105 98 62" stroke="#628764" stroke-width="5"/>
+          <path d="M90 162C59 155 54 127 53 117C77 118 87 132 90 162Z" fill="#9cb68a"/>
+          <path d="M89 146C117 138 129 116 133 105C110 101 95 120 89 146Z" fill="#769f7b"/>
+          <path d="M85 113C61 108 49 86 46 76C65 77 83 94 85 113Z" fill="#8db287"/>
+          <g transform="translate(99 56)">
+            <ellipse cx="0" cy="-22" rx="15" ry="26" fill="#d78790"/>
+            <ellipse cx="0" cy="-22" rx="15" ry="26" fill="#e6a6a4" transform="rotate(51)"/>
+            <ellipse cx="0" cy="-22" rx="15" ry="26" fill="#e1a099" transform="rotate(103)"/>
+            <ellipse cx="0" cy="-22" rx="15" ry="26" fill="#d88992" transform="rotate(154)"/>
+            <ellipse cx="0" cy="-22" rx="15" ry="26" fill="#eab6a6" transform="rotate(206)"/>
+            <ellipse cx="0" cy="-22" rx="15" ry="26" fill="#dba0a9" transform="rotate(257)"/>
+            <ellipse cx="0" cy="-22" rx="15" ry="26" fill="#e6aba6" transform="rotate(309)"/>
+            <circle r="16" fill="#f5d0a0"/><circle r="9" fill="#d4a06c"/>
+          </g>
+        </svg>
+      </div>
+      <div class="terminal" aria-label="Шуточный код поздравления">
+        <div class="term-head"><i class="dot"></i><i class="dot"></i><i class="dot"></i><span class="term-file">a_little_surprise.py</span></div>
+        <div><span class="c-pink">recipient</span> = <span class="c-yellow">"Даша"</span></div>
+        <div><span class="c-pink">occasion</span> = <span class="c-yellow">"просто так"</span></div>
+        <div><span class="c-green"># время сделать что-то красивое ✿</span></div>
+      </div>
+      <button type="button" class="primary" id="startBtn">Запустить маленькое чудо <span class="arrow">↗</span></button>
+      <p class="tiny">написано с заботой · работает от одного касания</p>
+    </section>
+    <section class="scene scene-top" id="garden" hidden aria-label="Интерактивный букет">
+      <p class="step">глава 01 / немного волшебства</p>
+      <h2 id="gardenTitle">Давай вырастим<br><em>букет?</em></h2>
+      <p class="desc" id="gardenDesc" style="margin-bottom:8px">Выбери цвет и нажимай на кнопку. Здесь каждый цветок появляется благодаря тебе.</p>
+      <div class="canvas-card" id="bouquetCard">
+        <span class="garden-tag">your little garden ✿</span>
+        <svg class="garden-svg" id="bouquetSvg" viewBox="0 0 390 405" role="img" aria-label="Анимированный букет из цветов, которые появляются при нажатии кнопки">
+          <defs>
+            <linearGradient id="wrapGrad" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#e9d2b9"/><stop offset="1" stop-color="#d8b79d"/></linearGradient>
+          </defs>
+          <g id="stems"></g>
+          <g id="paper-wrap">
+            <path d="M58 238 L136 304 L195 391 L244 302 L330 230 L280 286 L202 396 L174 397 L104 298 Z" fill="url(#wrapGrad)" stroke="#c4a88e" stroke-width="1.5"/>
+            <path d="M58 238L122 270L193 390L150 304Z" fill="#f2dfc9" opacity=".75"/>
+            <path d="M330 230L256 274L195 391L238 301Z" fill="#e5c9ae" opacity=".9"/>
+          </g>
+          <g id="blooms"></g>
+          <g id="ribbon">
+            <path d="M178 345 Q150 359 150 377 Q177 383 194 356 Q210 383 240 370 Q237 354 203 346Z" fill="#b77d86"/>
+            <path d="M187 358L162 395L187 381L191 394L202 360Z" fill="#c28a8e"/>
+            <path d="M198 357L224 397L226 381L240 392L208 355Z" fill="#c28a8e"/>
+            <ellipse cx="196" cy="352" rx="14" ry="10" fill="#a96874"/>
+          </g>
+        </svg>
+        <span class="garden-bottom">a bouquet, one click at a time</span>
+      </div>
+      <div id="paletteSection">
+        <p class="palette-label" id="paletteLabel">Оттенок: пудрово-розовый</p>
+        <div class="palette-row" role="group" aria-label="Выбери оттенок следующего цветка">
+          <button class="palette active" data-palette="rose" aria-label="Пудрово-розовый" aria-pressed="true"><span style="background:#d98e9b"></span></button>
+          <button class="palette" data-palette="lilac" aria-label="Лавандовый" aria-pressed="false"><span style="background:#a7a0ce"></span></button>
+          <button class="palette" data-palette="peach" aria-label="Персиковый" aria-pressed="false"><span style="background:#efb38c"></span></button>
+          <button class="palette" data-palette="butter" aria-label="Сливочный" aria-pressed="false"><span style="background:#e7ce94"></span></button>
+        </div>
+      </div>
+      <div class="progress" id="progress" aria-label="Прогресс букета"></div>
+      <button class="primary" type="button" id="growBtn">Вырастить цветок <span class="arrow">✿</span></button>
+      <p class="flow-caption" id="progressText" aria-live="polite">0 из 7 цветков · всё начинается с одного</p>
+    </section>
+    <section class="scene scene-top" id="letterScene" hidden aria-label="Личное послание">
+      <p class="step">глава 02 / кое-что важное</p>
+      <h2>У каждого букета<br><em>есть история.</em></h2>
+      <p class="desc" id="envelopeHint">И у этого тоже. Нажми на конверт, чтобы узнать её.</p>
+      <div class="letter-wrap">
+        <button class="envelope" id="envelope" type="button" aria-label="Открыть конверт с посланием" aria-expanded="false">
+          <div class="env-body"></div><div class="env-bottom"></div><div class="env-left"></div><div class="env-right"></div><div class="env-flap"></div><div class="seal">✿</div>
+        </button>
+        <article class="letter" id="letter" hidden>
+          <h3>Даша,</h3>
+          <p>Мне хотелось подарить тебе не только цветы, но и маленький момент, который заставит улыбнуться.</p>
+          <p>Поэтому вместо обычной открытки получился этот крошечный мир — с цветами, немного кодом и капелькой волшебства.</p>
+          <p>Надеюсь, сегодня у тебя будет чуть больше поводов радоваться. Ты этого заслуживаешь. ✨</p>
+          <p class="sign">С теплом, для тебя ♡</p>
+        </article>
+      </div>
+      <div class="actions" id="letterActions" hidden>
+        <button class="primary" id="finalMagic" type="button">И ещё один маленький сюрприз <span class="arrow">✧</span></button>
+        <button class="restart" id="restartBtn" type="button">Вырастить букет заново ↻</button>
+      </div>
+      <div class="magic-reveal" id="magicReveal" hidden aria-live="polite">
+        <p class="eyebrow">the end? not really.</p>
+        <h3>Настоящие цветы —<br><em>уже у тебя.</em></h3>
+        <p>А этот маленький сад теперь тоже твой. Возвращайся, когда захочется немного улыбнуться. 🌸</p>
+      </div>
+    </section>
+  </main>
+  <footer class="footer">✿ &nbsp; MADE WITH CODE, NOT A TEMPLATE &nbsp; ✿</footer>
+</div>
+<script>
+  // === НАСТРОЙКИ: персонализируй послание здесь ===
+  const CONFIG = {
+    name: 'Даша',
+    letter: [
+      'Мне хотелось подарить тебе не только цветы, но и маленький момент, который заставит улыбнуться.',
+      'Поэтому вместо обычной открытки получился этот крошечный мир — с цветами, немного кодом и капелькой волшебства.',
+      'Надеюсь, сегодня у тебя будет чуть больше поводов радоваться. Ты этого заслуживаешь. ✨'
+    ],
+    signature: 'С теплом, для тебя ♡',
+    flowerCount: 7
+  };
+
+  const $ = (s) => document.querySelector(s);
+  const SVG = 'http://www.w3.org/2000/svg';
+  const makeSVG = (name, attrs={}) => { const e = document.createElementNS(SVG,name); for(const [k,v] of Object.entries(attrs)) e.setAttribute(k,v); return e; };
+  const palettes = {
+    rose: {name:'пудрово-розовый', petals:['#d88d99','#e5a8ad','#e9bac0'], mid:'#f2d6a5', core:'#c79468'},
+    lilac: {name:'лавандовый', petals:['#a39acb','#bbb0d9','#d0c7e5'], mid:'#efd8ad', core:'#c9a66c'},
+    peach: {name:'персиковый', petals:['#efa98d','#f6c5a8','#f2bb9b'], mid:'#f4d3a4', core:'#c59159'},
+    butter: {name:'сливочный', petals:['#e6c981','#f1dcad','#f7e8c2'], mid:'#f0bc7e', core:'#b98754'}
+  };
+  const positions = [
+    {x:175,y:153,r:22},{x:118,y:195,r:20},{x:247,y:202,r:23},
+    {x:100,y:126,r:19},{x:223,y:117,r:23},{x:169,y:233,r:25},
+    {x:275,y:147,r:20}
+  ];
+  let color='rose', n=0, isWrapped=false, soundOn=false, audioContext=null;
+  $('#introName').textContent = CONFIG.name;
+  $('#letter h3').textContent = CONFIG.name + ',';
+  $('#letter').querySelectorAll('p:not(.sign)').forEach((p,i)=>p.textContent=CONFIG.letter[i]||'');
+  $('.sign').textContent=CONFIG.signature;
+  const progress = $('#progress');
+  for(let i=0;i<CONFIG.flowerCount;i++) progress.appendChild(document.createElement('span'));
+  function setScene(id) { document.querySelectorAll('.scene').forEach(s=>s.hidden=(s.id!==id)); window.scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'}); }
+  function playNote(freq=610) {
+    if(!soundOn) return;
+    try {
+      audioContext ||= new (window.AudioContext || window.webkitAudioContext)();
+      if(audioContext.state==='suspended') audioContext.resume();
+      const osc=audioContext.createOscillator(),gain=audioContext.createGain();
+      osc.type='sine';osc.frequency.setValueAtTime(freq,audioContext.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(freq*1.32,audioContext.currentTime+.13);
+      gain.gain.setValueAtTime(.0001,audioContext.currentTime);
+      gain.gain.exponentialRampToValueAtTime(.06,audioContext.currentTime+.024);
+      gain.gain.exponentialRampToValueAtTime(.0001,audioContext.currentTime+.45);
+      osc.connect(gain);gain.connect(audioContext.destination);
+      osc.start();osc.stop(audioContext.currentTime+.48);
+    }catch(e){ /* sound is an optional feature */ }
+  }
+  $('#soundBtn').addEventListener('click',()=>{
+    soundOn=!soundOn; $('#soundBtn').setAttribute('aria-pressed',String(soundOn));
+    $('#soundLabel').textContent=soundOn?'ЗВУК ВКЛ.':'ЗВУК ВЫКЛ.';
+    if(soundOn) playNote(700);
+  });
+  $('#startBtn').addEventListener('click',()=>{playNote(560);setScene('garden');});
+  document.querySelectorAll('[data-palette]').forEach(btn=>btn.addEventListener('click',()=>{
+    color=btn.dataset.palette;
+    document.querySelectorAll('[data-palette]').forEach(b=>{const on=b===btn;b.classList.toggle('active',on);b.setAttribute('aria-pressed',String(on));});
+    $('#paletteLabel').textContent='Оттенок: '+palettes[color].name;
+    playNote(450);
+  }));
+  function addFlower(pos,paletteKey,index){
+    const p=palettes[paletteKey];
+    const stemGroup=makeSVG('g',{class:'flower-group'});
+    const bend=(pos.x-195)*.24;
+    const path=makeSVG('path',{class:'stem',d:`M195 357 Q${195+bend} ${pos.y+114} ${pos.x} ${pos.y+8}`});
+    stemGroup.appendChild(path);
+    const leafSide=index%2?1:-1;
+    const ly=Math.round((pos.y+345)/2);
+    const lx=Math.round(194+(pos.x-195)*.58);
+    stemGroup.appendChild(makeSVG('path',{class:'leaf',d:`M${lx} ${ly} Q${lx+leafSide*36} ${ly-36} ${lx+leafSide*47} ${ly-6} Q${lx+leafSide*28} ${ly+12} ${lx} ${ly}Z`}));
+    $('#stems').appendChild(stemGroup);
+    const head=makeSVG('g',{transform:`translate(${pos.x} ${pos.y})`,role:'button',tabindex:'0','aria-label':'Коснись цветка — появятся искры'});
+    const flower=makeSVG('g',{class:'flower-head'});
+    const petalCount=8;
+    for(let j=0;j<petalCount;j++) flower.appendChild(makeSVG('ellipse',{
+      cx:0,cy:-pos.r*.69,rx:pos.r*.43,ry:pos.r*.74,
+      fill:p.petals[j%p.petals.length],transform:`rotate(${j*360/petalCount})`,
+      stroke:'#fff3e7','stroke-width':'.45',opacity:'.98'
+    }));
+    flower.appendChild(makeSVG('circle',{cx:0,cy:0,r:pos.r*.46,fill:p.mid}));
+    flower.appendChild(makeSVG('circle',{cx:0,cy:0,r:pos.r*.26,fill:p.core,opacity:'.75'}));
+    for(let j=0;j<6;j++){const a=j*Math.PI/3;flower.appendChild(makeSVG('circle',{
+      cx:(Math.cos(a)*pos.r*.26).toFixed(2),cy:(Math.sin(a)*pos.r*.26).toFixed(2),r:1.6,fill:'#fff0c9'
+    }));}
+    head.appendChild(flower);
+    $('#blooms').appendChild(head);
+    function flowerTouch(){const b=head.getBoundingClientRect();burst(b.left+b.width/2,b.top+b.height/2,14);playNote(630);}
+    head.addEventListener('click',flowerTouch);
+    head.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();flowerTouch();}});
+  }
+  function updateProgress(){
+    [...progress.children].forEach((el,i)=>el.classList.toggle('on',i<n));
+    const text=$('#progressText');
+    if(n<CONFIG.flowerCount){text.textContent=`${n} из ${CONFIG.flowerCount} цветков · ${n===0?'всё начинается с одного':n<4?'получается очень красиво':'почти готово!'}`;}
+    else if(!isWrapped){text.textContent='Все цветы на месте. Осталось собрать букет ♡';}
+    else{text.textContent='Готово! Можно касаться цветков, чтобы увидеть искры ✨';}
+  }
+  $('#growBtn').addEventListener('click',()=>{
+    if(n<CONFIG.flowerCount){
+      const pos=positions[n%positions.length];addFlower(pos,color,n);n++;
+      playNote(400+n*49);const b=$('#bouquetCard').getBoundingClientRect();burst(b.left+b.width*pos.x/390,b.top+b.height*pos.y/405,8);
+      if(n===CONFIG.flowerCount){$('#growBtn').innerHTML='Собрать букет <span class="arrow">↗</span>';$('#paletteSection').hidden=true;}
+      updateProgress();return;
+    }
+    if(!isWrapped){isWrapped=true;$('#bouquetSvg').classList.add('is-wrapped');playNote(850);burst(innerWidth/2,innerHeight/2,62);
+      $('#growBtn').innerHTML='Открыть записку <span class="arrow">✉</span>';
+      $('#gardenTitle').innerHTML='Кажется, получилось<br><em>красиво.</em>';
+      $('#gardenDesc').textContent='Цветы готовы. Но это ещё не весь сюрприз.';
+      updateProgress();return;
+    }
+    playNote(640);setScene('letterScene');
+  });
+  $('#envelope').addEventListener('click',()=>{
+    if($('#envelope').classList.contains('opened'))return;
+    $('#envelope').classList.add('opened');$('#envelope').setAttribute('aria-expanded','true');playNote(660);
+    setTimeout(()=>{$('#envelope').hidden=true;$('#letter').hidden=false;$('#letterActions').hidden=false;$('#envelopeHint').textContent='Это письмо — только для тебя.';burst(innerWidth/2,innerHeight*.4,24);},600);
+  });
+  $('#finalMagic').addEventListener('click',()=>{
+    $('#finalMagic').hidden=true;$('#magicReveal').hidden=false;burst(innerWidth/2,innerHeight*.45,120);playNote(820);
+  });
+  $('#restartBtn').addEventListener('click',()=>{
+    n=0;isWrapped=false;color='rose';$('#stems').replaceChildren();$('#blooms').replaceChildren();
+    $('#bouquetSvg').classList.remove('is-wrapped');$('#paletteSection').hidden=false;
+    document.querySelector('[data-palette="rose"]').click();
+    $('#growBtn').innerHTML='Вырастить цветок <span class="arrow">✿</span>';
+    $('#gardenTitle').innerHTML='Давай вырастим<br><em>букет?</em>';
+    $('#gardenDesc').textContent='Выбери цвет и нажимай на кнопку. Здесь каждый цветок появляется благодаря тебе.';
+    $('#envelope').hidden=false;$('#envelope').classList.remove('opened');$('#envelope').setAttribute('aria-expanded','false');
+    $('#letter').hidden=true;$('#letterActions').hidden=true;$('#magicReveal').hidden=true;$('#finalMagic').hidden=false;
+    $('#envelopeHint').textContent='И у этого тоже. Нажми на конверт, чтобы узнать её.';
+    updateProgress();setScene('garden');
+  });
+  updateProgress();
+  // Lightweight canvas petals — no packages or external APIs.
+  const canvas=$('#particles'),ctx=canvas.getContext('2d');
+  let W=innerWidth,H=innerHeight,particles=[],framePending=false;
+  const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function resize(){const dpr=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;canvas.width=Math.round(W*dpr);canvas.height=Math.round(H*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);}
+  addEventListener('resize',resize,{passive:true});resize();
+  function burst(x,y,count=24){
+    if(reduced)return;
+    const colors=['#df92a3','#eec3a3','#b2a9d9','#e6d59f','#f5e4d5'];
+    for(let i=0;i<count;i++){
+      const a=Math.random()*Math.PI*2,v=2+Math.random()*4.5;
+      particles.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-2.2,life:85+Math.random()*45,age:0,size:3+Math.random()*5,rot:Math.random()*Math.PI,spin:(Math.random()-.5)*.18,color:colors[Math.floor(Math.random()*colors.length)]});
+    }
+    if(particles.length>280)particles=particles.slice(-280);
+    if(!framePending){framePending=true;requestAnimationFrame(animate);}
+  }
+  function animate(){ctx.clearRect(0,0,W,H);
+    particles=particles.filter(p=>p.age<p.life);
+    for(const p of particles){p.age++;p.x+=p.vx;p.y+=p.vy;p.vy+=.064;p.vx*=.995;p.rot+=p.spin;
+      ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot);ctx.globalAlpha=Math.max(0,1-p.age/p.life);
+      ctx.fillStyle=p.color;ctx.beginPath();ctx.ellipse(0,0,p.size*.53,p.size,0,0,Math.PI*2);ctx.fill();ctx.restore();}
+    if(particles.length)requestAnimationFrame(animate);else {framePending=false;ctx.clearRect(0,0,W,H);}
+  }
+</script>
+</body>
+</html>
