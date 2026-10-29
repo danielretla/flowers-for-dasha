@@ -45,6 +45,28 @@
     .actions .secondary { min-width:220px; }
     .secondary { border:1px solid #d5c9be; border-radius:14px; min-height:48px; color:#526355; background:#fff9f2; padding:0 20px; font-weight:700; font-size:13px; }
     .arrow { font-size:19px; font-weight:400; }
+
+    /* Soft visual cue for the one action that advances the story. */
+    .primary.next-action { animation:ctaGlow 2.8s ease-in-out infinite; }
+    .primary.next-action .arrow { display:inline-block; animation:ctaHint 2.8s ease-in-out infinite; }
+    .secondary.next-action { animation:ctaSecondaryGlow 2.8s ease-in-out infinite; }
+    .envelope.next-action:not(.opened) .seal { animation:sealGlow 2.8s ease-in-out infinite; }
+    @keyframes ctaGlow {
+      0%,100% { box-shadow:0 12px 24px #284d332d,0 0 0 0 #c7839200; }
+      50% { box-shadow:0 15px 28px #284d3340,0 0 0 7px #c7839231; }
+    }
+    @keyframes ctaHint {
+      0%,100% { transform:translateY(0); }
+      50% { transform:translateY(-3px); }
+    }
+    @keyframes ctaSecondaryGlow {
+      0%,100% { box-shadow:0 0 0 0 #c7839200; }
+      50% { box-shadow:0 0 0 7px #c7839229; }
+    }
+    @keyframes sealGlow {
+      0%,100% { box-shadow:0 4px 8px #98626b33,0 0 0 0 #b8747a00; }
+      50% { box-shadow:0 5px 14px #98626b55,0 0 0 9px #b8747a30; }
+    }
     .scene-top { padding-top:10px; }
     .step { text-align:center; font-size:10px; font-weight:700; color:#b17e80; letter-spacing:.2em; text-transform:uppercase; }
     .canvas-card { width:100%; max-width:418px; aspect-ratio: 390/405; margin:8px auto 13px; position:relative; border:1px solid #e7ddd1; border-radius:28px; background: radial-gradient(circle at 50% 32%,#fffdf9 4%,#faf3e9 62%,#f0e4d8 100%); overflow:hidden; box-shadow:inset 0 8px 24px #ffffffc7,0 14px 30px #775f4420; touch-action:manipulation; }
@@ -126,7 +148,7 @@
           </g>
         </svg>
       </div>
-      <button type="button" class="primary" id="startBtn">Запустить маленькое чудо <span class="arrow">↗</span></button>
+      <button type="button" class="primary next-action" id="startBtn">Запустить маленькое чудо <span class="arrow">↗</span></button>
     </section>
     <section class="scene scene-top" id="garden" hidden aria-label="Интерактивный букет">
       <p class="step">глава 01 / немного волшебства</p>
@@ -164,7 +186,7 @@
         </div>
       </div>
       <div class="progress" id="progress" aria-label="Прогресс букета"></div>
-      <button class="primary" type="button" id="growBtn">Вырастить цветок <span class="arrow">✿</span></button>
+      <button class="primary next-action" type="button" id="growBtn">Вырастить цветок <span class="arrow">✿</span></button>
       <p class="flow-caption" id="progressText" aria-live="polite">0 из 7 цветков · всё начинается с одного</p>
     </section>
     <section class="scene scene-top" id="letterScene" hidden aria-label="Личное послание">
@@ -172,7 +194,7 @@
       <h2>У каждого букета<br><em>есть история.</em></h2>
       <p class="desc" id="envelopeHint">И у этого тоже. Нажми на конверт, чтобы узнать её.</p>
       <div class="letter-wrap">
-        <button class="envelope" id="envelope" type="button" aria-label="Открыть конверт с посланием" aria-expanded="false">
+        <button class="envelope next-action" id="envelope" type="button" aria-label="Открыть конверт с посланием" aria-expanded="false">
           <div class="env-body"></div><div class="env-bottom"></div><div class="env-left"></div><div class="env-right"></div><div class="env-flap"></div><div class="seal">✿</div>
         </button>
         <article class="letter" id="letter" hidden>
@@ -184,7 +206,7 @@
         </article>
       </div>
       <div class="actions" id="letterActions" hidden>
-        <button class="secondary" id="restartBtn" type="button">Пересобрать букет ↻</button>
+        <button class="secondary next-action" id="restartBtn" type="button">Пересобрать букет ↻</button>
       </div>
     </section>
   </main>
