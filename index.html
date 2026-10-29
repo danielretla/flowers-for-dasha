@@ -37,12 +37,6 @@
     .intro-art::after { content:'✧'; position:absolute; right:18%; top:18%; color:#a9626d; font-size:28px; }
     .intro-sprig { position:relative; width:160px; height:192px; transform:rotate(13deg); animation:sway 6s ease-in-out infinite; filter:drop-shadow(4px 12px 10px #7e614722); }
     .intro-sprig path { stroke-linecap:round; }
-    .terminal { background:#293a33; border-radius:13px; box-shadow:0 18px 50px #263b3026; padding:15px 17px; color:#ebede5; width:min(100%,405px); margin:0 auto 22px; font:12px/1.9 ui-monospace,SFMono-Regular,Consolas,monospace; }
-    .term-head { display:flex; gap:5px; align-items:center; margin-bottom:10px; border-bottom:1px solid #ffffff18; padding-bottom:9px; }
-    .dot { width:7px;height:7px;border-radius:100%; background:#eeaeae; }
-    .dot:nth-child(2) { background:#e3cf98; }.dot:nth-child(3){ background:#b1c9aa; }
-    .term-file { margin-left:auto; color:#aab6ac; font-size:10px; }
-    .c-pink{ color:#eab1b6; }.c-yellow{color:#f1d3a2}.c-green{color:#b4e3ba}
     .primary { width:min(100%,395px); min-height:56px; display:flex; align-items:center; justify-content:center; gap:10px; margin:0 auto; border:0; background:var(--dark); color:white; border-radius:15px; font-size:14px; font-weight:700; box-shadow:0 12px 24px #284d332d; transition:transform .2s, box-shadow .2s; }
     .primary:hover:not(:disabled) { transform:translateY(-2px);box-shadow:0 16px 28px #284d333b; }
     .primary:active:not(:disabled) { transform:scale(.98); }
@@ -129,11 +123,6 @@
             <circle r="16" fill="#f5d0a0"/><circle r="9" fill="#d4a06c"/>
           </g>
         </svg>
-      </div>
-      <div class="terminal" aria-label="Шуточный код поздравления">
-        <div class="term-head"><i class="dot"></i><i class="dot"></i><i class="dot"></i><span class="term-file">a_little_surprise.py</span></div>
-        <div><span class="c-pink">recipient</span> = <span class="c-yellow">"Даша"</span></div>
-        <div><span class="c-pink">occasion</span> = <span class="c-yellow">"просто так"</span></div>
       </div>
       <button type="button" class="primary" id="startBtn">Запустить маленькое чудо <span class="arrow">↗</span></button>
     </section>
