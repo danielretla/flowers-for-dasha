@@ -41,6 +41,8 @@
     .primary:hover:not(:disabled) { transform:translateY(-2px);box-shadow:0 16px 28px #284d333b; }
     .primary:active:not(:disabled) { transform:scale(.98); }
     .primary:disabled { background:#aeb9ad; box-shadow:none; }
+    .actions { display:flex; justify-content:center; margin:12px auto 8px; }
+    .actions .secondary { min-width:220px; }
     .secondary { border:1px solid #d5c9be; border-radius:14px; min-height:48px; color:#526355; background:#fff9f2; padding:0 20px; font-weight:700; font-size:13px; }
     .arrow { font-size:19px; font-weight:400; }
     .scene-top { padding-top:10px; }
@@ -181,6 +183,9 @@
           <p class="sign">С теплом, для тебя ♡</p>
         </article>
       </div>
+      <div class="actions" id="letterActions" hidden>
+        <button class="secondary" id="restartBtn" type="button">Пересобрать букет ↻</button>
+      </div>
     </section>
   </main>
 </div>
@@ -301,7 +306,40 @@
   $('#envelope').addEventListener('click',()=>{
     if($('#envelope').classList.contains('opened'))return;
     $('#envelope').classList.add('opened');$('#envelope').setAttribute('aria-expanded','true');playNote(660);
-    setTimeout(()=>{$('#envelope').hidden=true;$('#letter').hidden=false;$('#envelopeHint').textContent='Это письмо — только для тебя.';burst(innerWidth/2,innerHeight*.4,24);},600);
+    setTimeout(()=>{
+      $('#envelope').hidden=true;
+      $('#letter').hidden=false;
+      $('#letterActions').hidden=false;
+      $('#envelopeHint').textContent='Это письмо — только для тебя.';
+      burst(innerWidth/2,innerHeight*.4,24);
+    },600);
+  });
+  $('#restartBtn').addEventListener('click',()=>{
+    n=0;
+    isWrapped=false;
+    color='rose';
+    $('#stems').replaceChildren();
+    $('#blooms').replaceChildren();
+    $('#bouquetSvg').classList.remove('is-wrapped');
+    $('#paletteSection').hidden=false;
+    document.querySelectorAll('[data-palette]').forEach(btn=>{
+      const selected=btn.dataset.palette==='rose';
+      btn.classList.toggle('active',selected);
+      btn.setAttribute('aria-pressed',String(selected));
+    });
+    $('#paletteLabel').textContent='Оттенок: '+palettes.rose.name;
+    $('#growBtn').innerHTML='Вырастить цветок <span class="arrow">✿</span>';
+    $('#gardenTitle').innerHTML='Давай вырастим<br><em>букет?</em>';
+    $('#gardenDesc').textContent='Выбери цвет и нажимай на кнопку. Здесь каждый цветок появляется благодаря тебе.';
+    $('#envelope').hidden=false;
+    $('#envelope').classList.remove('opened');
+    $('#envelope').setAttribute('aria-expanded','false');
+    $('#letter').hidden=true;
+    $('#letterActions').hidden=true;
+    $('#envelopeHint').textContent='И у этого тоже. Нажми на конверт, чтобы узнать её.';
+    updateProgress();
+    playNote(560);
+    setScene('garden');
   });
   updateProgress();
   // Lightweight canvas petals — no packages or external APIs.
